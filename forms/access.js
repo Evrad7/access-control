@@ -27,7 +27,7 @@ class CreateAccessForm{
         if(iudUser===undefined){
             throw Error("Ce champ est obligatoire")
         }
-            var user=await User.findOne({badge:{iud:iudUser}})
+            var user=await User.findOne({badge:{iud:iudUser}, active:true})
             if(user===null){
             }
             else{
@@ -39,7 +39,7 @@ class CreateAccessForm{
         if(iudRessource===undefined){
             throw Error("Ce champ est obligatoire")
         }
-        var ressource=await Ressource.findOne({iud:iudRessource})
+        var ressource=await Ressource.findOne({iud:iudRessource, active:true})
             if(ressource===null){
                 throw Error("iud de la ressource n'existe pas")
             }

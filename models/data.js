@@ -3,6 +3,10 @@ var mongoose=require("./connexion").mongoose
 var findOrCreate=require("mongoose-findorcreate")
 
 var UserSchema=mongoose.Schema({
+    active:{
+        type:Boolean,
+        default:true,
+    },
     firstName:String,
     lastName:String,
     tel:{
@@ -26,6 +30,10 @@ var UserSchema=mongoose.Schema({
 })
 
 var RessourceSchema=mongoose.Schema({
+    active:{
+        type:Boolean,
+        default:true,
+    },
     name:{
         type:String,
         unique:true,

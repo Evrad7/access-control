@@ -22,11 +22,35 @@ get= async function(req, res){
     
 }
 
-search= async function(req, res){
-    search=req.query.search
+getOne=async function(req, res){
     try{
-        ressources=await Ressource.find({$or:[{name:{$regex:search, $options:"i"}}]})
-        .sort({"name":1})
+        var ressource= await Ressource.findById(req.query.id)
+        permissions= await Permission.find({idRessource:ressource._id}, {idPermission:0, idRessource:0}).populate({path:"idUser"})
+        ressource=JSON.parse(JSON.stringify(ressource))
+        console.log(ressource)
+        ressource.users=permissions.map(elt=>elt.idUser)
+        res.json(200, ressource)
+    }
+    catch(error){
+        res.json(500, error)
+    }
+}
+
+search= async function(req, res){          
+    search=req.query.search
+    active=req.query.active
+
+    try{
+        if(active===undefined){
+            ressources=await Ressource.find({$or:[{name:{$regex:search, $options:"i"}}]})
+            .sort({"name":1})
+        }
+        else{
+            active=active==="0"?false:true
+            ressources=await Ressource.find({active:active, $or:[{name:{$regex:search, $options:"i"}}]})
+            .sort({"name":1})
+        }
+       
         ressources=JSON.parse(JSON.stringify(ressources))
             for(var i=0; i<ressources.length; i++ ){
                 permissions=await Permission.find({idRessource:ressources[i]._id}, {idRessource:0}).populate({path:"idUser"})
@@ -161,24 +185,18 @@ update= async function(req, res){
 }
 delete_= async function(req, res){
     var id=req.query.id
-    console.log(req.query)
     try{
-        accesses=await Access.find({idRessource:id})
-        if(accesses.length===0){
+
                 ressource=await Ressource.findByIdAndDelete(id)
-                console.log(id)
+                Access.deleteMany({idRessource:ressource._id})
                 if(ressource!==null){
                     await Permission.deleteMany({idRessource:ressource._id})
                     res.json(200, ressource)
                 }
                 else{
-                    res.json(500, "id incorrect")
+                    res.json(500, {error:true, message:"La ressource n'existe pas"})
                 }
-               
-            }
-        else{
-            res.json(500,  "object is linked")
-        }
+          
     }
     catch(error){
         res.json(500, error)
@@ -188,6 +206,19 @@ delete_= async function(req, res){
     
 
    
+toggleArchived=async function(req, res){
+    var id=req.query.id
+    try{
+        ressource=await Ressource.findById(id);
+        ressource.active=!ressource.active
+        ressource.save()
+        res.json(200, ressource)
+    }
+    catch(error){
+        console.log(error)
+        res.json(500, error)
+    }
+}
 
  
 
@@ -196,3 +227,5 @@ exports.get=get
 exports.update=update
 exports.delete=delete_
 exports.search=search
+exports.getOne=getOne
+exports.toggleArchived=toggleArchived

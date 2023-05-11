@@ -36,7 +36,6 @@ Access.find().sort({"date":-1})
         status_=false
     }
     if (archived==="1"){
-        
         archived=true
     }
     else if (archived==="0"){
@@ -53,8 +52,6 @@ Access.find().sort({"date":-1})
     catch(error){
         res.json(500, error)
     }
-
-    console.log(req.query)
         filter={$and:
             [
                 {$or:
@@ -72,10 +69,6 @@ Access.find().sort({"date":-1})
     if (typeof archived=="boolean"){
         filter["$and"].push({"archived":archived})
     }
-    console.log(filter)
-   
-
-    
     Access.find(filter)
     .sort({"date":-1,})
     .populate({path:"idUser"})
@@ -133,7 +126,6 @@ create= async function(req, res){
 toggleStatusArchived= function(req, res){
     var id=req.query.id
     Access
-    
     .findById(id, {"_id":1, archived:1})
     .then(function(access){
         if(access!==null){

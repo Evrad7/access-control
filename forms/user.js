@@ -89,13 +89,13 @@ class CreateUserForm {
             this.cleanedData["firstName"] = this.validateFirstName(this.firstName)
         }
         catch (e) {
-            this.errors["firstName"] = e.message
+            this.errors["first_name"] = e.message
         }
         try {
             this.cleanedData["lastName"] = this.validateLastName(this.lastName)
         }
         catch (e) {
-            this.errors["lastName"] = e.message
+            this.errors["last_name"] = e.message
         }
         try {
             this.cleanedData["tel"] = this.validateTel(this.tel)
@@ -113,7 +113,7 @@ class CreateUserForm {
             this.cleanedData["badgeIUD"] = this.validateBadgeIUD(this.badgeIUD)
         }
         catch (e) {
-            this.errors["badgeIUD"] = e.message
+            this.errors["badge__iud"] = e.message
         }
         try {
             this.cleanedData["ressources"] = await this.validateRessources(this.ressources)
